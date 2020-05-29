@@ -3,7 +3,7 @@
 
 ## About
 
-Proof of concept solution for tracking objects using a simple 2d image and a 2 axis joint kinematics which project a laser light marker. Tracking is realized without modeling the 2 axis joint system or pinhole camera, neighter geometric distorsions of the camera lenses. The motivation behind was to keep as simple possible, without using any have math for this approach.
+Proof of concept for tracking objects using a simple 2D image and a 2 axis joint kinematics with a laser light. Tracking is realized without modeling the 2 axis joint system (forward kinematc transformation) or pinhole camera, neighter geometric distorsions of the camera lenses. The motivation behind was to keep as simple possible, without using any heavy math...and still get to work.
 
 <tr>
   <th>
@@ -11,18 +11,18 @@ Proof of concept solution for tracking objects using a simple 2d image and a 2 a
   </th>
 </tr>
 
-## System cocenpt
+## System concept
 
 The system consists from two parts:
-- Motor guidance, an Arduino board [pulsivo](www.pulsivo.com)
-- Software running on the PC, does the object recognition using [OpenCV](https://opencv.org), estimate the coordinates with a Kalman filter and commands the motors.
+- Motor guidance, an Arduino board [Plusivo](https://www.plusivo.com/)
+- Software running on the PC, does the object recognition using [OpenCV](https://opencv.org), estimate the coordinates with a Kalman filter and commands the motors. Note: the previous desing was with servo motors, but due to the low precision, was changed with stepper motors.
 
 ### Motor guidance system
 
+The guidance system has 2 unipolar stepper motors, connected to the ULN2003A motor direvers. The stepper motors [28BYJ-48](https://arduinoinfo.mywikis.net/wiki/SmallSteppers) have incorporated geaars divideing the bases steps approximativelly to 4096 microsteps / rotation.
 <tr>
-  <th>
-  <a name="tracker" href=""><img src="./images/mc.jpg" alt="400" width="400"></a>
-  </th>
+<a name="tracker" href=""><img src="./images/schematics.png" alt="400" width="800"></a>
+<a name="tracker" href=""><img src="./images/mc.jpg" alt="400" width="400"></a>
 </tr>
 
 Once the ```.ino``` file is written to the arduino board, can be accessed over serial. Send in a serial terminal window the ```ls,0``` to list all the avilable commands. It sould look like this.
@@ -42,6 +42,25 @@ sh,[0,1] - set home posiion for motor [0,1]
 gh,[0,1] - go home motor [0,1]
 ```
 
+## The Software
+
+<tr>
+  <th>
+  <a name="tracker" href=""><img src="./images/sysdesign.png" alt="400" width="800"></a>
+  </th>
+</tr>
+
+The RGB images from the camera are converted in HSV colospace. Here a specific color filter is applied on the image. After the position of the color field is detected, a contour detection algorithm is applied to filter out false detections and get the position of the object tracked in the 2D space. The color to be tracked can be easily adjusted, trough the definitions below. To determin the rights color spaces, use the [color_filterer](https://github.com/fvilmos/color_filterer) software.
+
+```
+#Laser pointer color code
+OBJ_1_COLOR_CODE=[255,50,105,255,255,255]
+
+#Ball color code
+OBJ_2_COLOR_CODE=[10,108,136,62,142,255]
+```
+The heart of the guidance system is the Kalman estimator (2 dimensional). Currently the predict and correct part is used, without using the prediction when the target is lost (is a constant velocity model, therefore the behaviour can be not the expected one).
+
 ## Usage
 
 Admin righs will be needed since the sotware get access to the serial port. 
@@ -60,12 +79,16 @@ optional arguments:
 
 ### Future work
 
-Change color tracker to object detection using machine learning
+Change color tracker to object detection using machine learning.
 
 ## Resources
 
 [Python OpenCV tutorial](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_colorspaces/py_colorspaces.html#converting-colorspaces).
 
 [Arduino CheepStepper librarry](https://github.com/tyhenry/CheapStepper) - used to control the stepper motors
+
+[Fritzing components for stepper and driver](https://github.com/e-radionicacom/e-radionica.com-Fritzing-Library-parts-)
+
+[Kalman filter intro](https://www.kalmanfilter.net/kalmanmulti.html)
 
 /Enjoy.

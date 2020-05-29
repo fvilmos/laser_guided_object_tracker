@@ -21,6 +21,13 @@ CAMID = 0
 # go Home threshold limit
 TH_LIMIT = 5
 
+#Laser pointer color code
+OBJ_1_COLOR_CODE=[255,50,105,255,255,255]
+
+#Ball color code
+OBJ_2_COLOR_CODE=[10,108,136,62,142,255]
+
+
 # create named window, set position
 cv2.namedWindow('img',2)
 cv2.moveWindow('img',0,0)
@@ -31,11 +38,15 @@ if __name__ == "__main__":
     # process cmd line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-cam', type=int, required=True, metavar='camID', default=0, help='Camera ID, default 0')
+    parser.add_argument('-ser', type=str, required=True, metavar='serial', default='/dev/ttyUSB0',
+                        help='Serial port name')
 
     args = parser.parse_args()
 
     # create cam instance
     CAMID = args.cam
+    SERIAL = args.ser
+
     cam0 = cv2.VideoCapture(CAMID)
 
     # resize, to spare CPU load
@@ -52,7 +63,7 @@ if __name__ == "__main__":
     objPP = clPreProcessing(False)
 
     # create motors control class
-    mctrl = clMotorCmd('/dev/ttyUSB0')
+    mctrl = clMotorCmd(SERIAL)
 
     # used as simple frame counter
     count = 1
@@ -76,12 +87,12 @@ if __name__ == "__main__":
         if cam0:
 
             # get laser pointer position
-            img1 = objPP.processImg(img0,255,50,105,255,255,255)
+            img1 = objPP.processImg(img0,OBJ_1_COLOR_CODE[0],OBJ_1_COLOR_CODE[1],OBJ_1_COLOR_CODE[2],OBJ_1_COLOR_CODE[3],OBJ_1_COLOR_CODE[4],OBJ_1_COLOR_CODE[5])
             ret = cd.CotourFilter(img1,10.0)
             ret = np.array(ret)
 
             # get ball position
-            imgb = objPP.processImg(img0,10,108,136,62,142,255)
+            imgb = objPP.processImg(img0,OBJ_2_COLOR_CODE[0],OBJ_2_COLOR_CODE[1],OBJ_2_COLOR_CODE[2],OBJ_2_COLOR_CODE[3],OBJ_2_COLOR_CODE[4],OBJ_2_COLOR_CODE[5])
             retb = cd.CotourFilter(imgb, 20.0)
             retb = np.array(retb)
 
