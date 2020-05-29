@@ -76,6 +76,8 @@ optional arguments:
   -ser serial  Serial port name
 
 ```
+After starting the system, the keyboard keys (w,a,s,d,h)can be used to bring the laser pointer in the frame. After this action the (is recommandded) to press the reset button on the Arduino board, this will set the home coordinates on for the motors and the tracking can start.
+
 
 ### Future work
 
