@@ -3,7 +3,7 @@
 
 ## About
 
-Proof of concept for tracking objects using a simple 2D image and a 2 axis joint kinematics with a laser light. Tracking is realized without modeling the 2 axis joint system (forward kinematc transformation) or pinhole camera, neighter geometric distorsions of the camera lenses. The motivation behind was to keep as simple possible, without using any heavy math...and still get to work.
+Proof of concept for tracking objects using a simple 2D image and a 2 axis joint kinematics with laser light. Tracking is realized without modeling the 2 axes joint system (forward kinematic transformation) or pinhole camera, neither geometric distortions of the camera lenses. The motivation behind was to keep as simply possible, without using any heavy math...and still get to work.
 
 <tr>
   <th>
@@ -13,9 +13,9 @@ Proof of concept for tracking objects using a simple 2D image and a 2 axis joint
 
 ## System concept
 
-The system consists from two parts:
+The system consists of two parts:
 - Motor guidance, an Arduino board [Plusivo](https://www.plusivo.com/)
-- Software running on the PC, does the object recognition using [OpenCV](https://opencv.org), estimate the coordinates with a Kalman filter and commands the motors. Note: the previous desing was with servo motors, but due to the low precision, was changed with stepper motors.
+- Software running on the PC, does the object recognition using [OpenCV](https://opencv.org), estimate the coordinates with a Kalman filter and commands the motors. Note: the previous design was with servo motors, but due to the low precision, was changed with stepper motors.
 
 ### Motor guidance system
 
@@ -25,7 +25,7 @@ The guidance system has 2 unipolar stepper motors, connected to the ULN2003A mot
 <a name="tracker" href=""><img src="./images/mc.jpg" alt="400" width="400"></a>
 </tr>
 
-Once the ```.ino``` file is written to the arduino board, can be accessed over serial. Send in a serial terminal window the ```ls,0``` to list all the avilable commands. It sould look like this.
+Once the ```.ino``` file is written to the Arduino board, can be accessed over serial. Send in a serial terminal window the ```ls,0``` to list all the available commands. It should look like this.
 ```
 m0mtp,val - stepper 0 move to position plus (clockwhise) n steps
 m0mtm,val - stepper 0 move to position minus (anti-clockwhise) n steps
@@ -50,7 +50,7 @@ gh,[0,1] - go home motor [0,1]
   </th>
 </tr>
 
-The RGB images from the camera are converted in HSV colospace. Here a specific color filter is applied on the image. After the position of the color field is detected, a contour detection algorithm is applied to filter out false detections and get the position of the object tracked in the 2D space. The color to be tracked can be easily adjusted, trough the definitions below. To determin the rights color spaces, use the [color_filterer](https://github.com/fvilmos/color_filterer) software.
+The RGB images from the camera are converted into HSV colorspace. Here a specific color filter is applied to the image. After the position of the color field is detected, a contour detection algorithm is applied to filter out false detections and get the position of the object tracked in the 2D space. The color to be tracked can be easily adjusted, trough the definitions below. To determine, the rights color spaces, use the [color_filterer](https://github.com/fvilmos/color_filterer) software.
 
 ```
 #Laser pointer color code
@@ -59,11 +59,11 @@ OBJ_1_COLOR_CODE=[255,50,105,255,255,255]
 #Ball color code
 OBJ_2_COLOR_CODE=[10,108,136,62,142,255]
 ```
-The heart of the guidance system is the Kalman estimator (2 dimensional). Currently the predict and correct part is used, without using the prediction when the target is lost (is a constant velocity model, therefore the behaviour can be not the expected one).
+The heart of the guidance system is the Kalman estimator (2 dimensional). Currently, the predicted and correct part is used, without using the prediction when the target is lost (is a constant velocity model, therefore the behavior can be not the expected one).
 
 ## Usage
 
-Admin righs will be needed since the sotware get access to the serial port. 
+Admin rights will be needed since the software get access to the serial port. 
 From Command line: 
 ```
 sudo python3 laser_guidance_ot.py -cam 0 -ser /dev/ttyUSB0
@@ -76,7 +76,7 @@ optional arguments:
   -ser serial  Serial port name
 
 ```
-After starting the system, the keyboard keys (w,a,s,d,h)can be used to bring the laser pointer in the frame. After this action the (is recommandded) to press the reset button on the Arduino board, this will set the home coordinates on for the motors and the tracking can start.
+After starting the system, the keyboard keys (w,a,s,d,h)can be used to bring the laser pointer in the frame. After this action the (is recommended) to press the reset button on the Arduino board, this will set the home coordinates on for the motors and the tracking can start.
 
 
 ### Future work
